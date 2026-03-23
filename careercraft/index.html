@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CareerCraft AI — Resume & Cover Letter Builder</title>
+
+  <!-- SEO -->
+  <meta name="description" content="AI-powered resume and cover letter builder. Tailor your resume to any job description in seconds. Free to try." />
+  <meta name="keywords" content="AI resume builder, cover letter generator, resume optimizer, job application AI" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://your-domain.com" />
+  <meta property="og:title" content="CareerCraft AI — Resume & Cover Letter Builder" />
+  <meta property="og:description" content="AI-powered resume and cover letter builder. Land more interviews." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!--
+    GOOGLE ADSENSE
+    1. Replace ca-pub-XXXXXXXXXXXXXXXX with your Publisher ID
+    2. Uncomment the <ins> tags in the HTML below
+    3. Remove the placeholder divs
+  -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,900;1,300&family=Cabinet+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── Design tokens ── */
+    :root {
+      --ink:       #0f0e0c;
+      --paper:     #faf8f4;
+      --cream:     #f0ece2;
+      --warm:      #e8dfc8;
+      --accent:    #c84b2f;
+      --accent-dk: #9e3620;
+      --muted:     #7a7265;
+      --border:    #d8d0bc;
+      --radius:    12px;
+      --font-head: 'Fraunces', Georgia, serif;
+      --font-body: 'Cabinet Grotesk', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Subtle grain */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999; opacity: 0.35;
+    }
+
+    /* ── Header ── */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(250,248,244,0.93);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+    }
+    nav {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .logo {
+      font-family: var(--font-head);
+      font-size: 1.25rem; font-weight: 900;
+      color: var(--ink); text-decoration: none;
+      letter-spacing: -0.025em;
+    }
+    .logo span { color: var(--accent); }
+    #user-info {
+      display: none; align-items: center; gap: 0.6rem;
+      font-size: 0.82rem; color: var(--muted);
+    }
+    #user-info img {
+      width: 30px; height: 30px; border-radius: 50%;
+      border: 1.5px solid var(--border);
+    }
+    .btn-logout {
+      font-family: var(--font-body); font-size: 0.78rem;
+      color: var(--muted); background: none;
+      border: 1px solid var(--border); border-radius: 100px;
+      padding: 0.22rem 0.7rem; cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-logout:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Login screen ── */
+    #login-screen {
+      min-height: calc(100vh - 60px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 3rem 1.5rem;
+    }
+    .hero {
+      max-width: 580px; width: 100%;
+      text-align: center;
+      display: flex; flex-direction: column; align-items: center; gap: 2rem;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); border: 1px solid rgba(200,75,47,0.3);
+      padding: 0.28rem 0.85rem; border-radius: 100px;
+      background: rgba(200,75,47,0.05);
+    }
+    .hero h1 {
+      font-family: var(--font-head);
+      font-size: clamp(2.6rem, 7vw, 4.2rem);
+      font-weight: 900; line-height: 1.0;
+      letter-spacing: -0.04em;
+    }
+    .hero h1 em { color: var(--accent); font-style: italic; }
+    .hero > p { font-size: 1rem; color: var(--muted); max-width: 400px; line-height: 1.65; }
+    .features-row {
+      display: flex; gap: 1.25rem; flex-wrap: wrap; justify-content: center;
+    }
+    .feat {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.78rem; color: var(--muted);
+    }
+    .feat-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+    .login-box {
+      background: var(--cream); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.75rem 2.25rem;
+      display: flex; flex-direction: column; align-items: center; gap: 1.1rem;
+      width: 100%; max-width: 340px;
+    }
+    .login-box p { font-size: 0.8rem; color: var(--muted); text-align: center; }
+
+    /* AdSense slot — hero leaderboard */
+    .ad-slot {
+      width: 100%; background: var(--cream);
+      border: 1px dashed var(--border); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.68rem; color: var(--muted); letter-spacing: 0.06em;
+      text-align: center; padding: 0.75rem;
+    }
+    .ad-slot-lg { min-height: 90px; max-width: 728px; }
+    .ad-slot-rect { min-height: 250px; max-width: 300px; width: 100%; }
+    .ad-slot-resp { min-height: 90px; }
+
+    /* ── App screen ── */
+    #app-screen { display: none; }
+    .app-wrap {
+      max-width: 1100px; margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+      display: grid; grid-template-columns: 1fr 300px; gap: 2rem;
+    }
+
+    /* Tabs */
+    .tool-tabs {
+      display: flex; margin-bottom: 1.5rem;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden; background: var(--cream);
+    }
+    .tab-btn {
+      flex: 1; padding: 0.72rem 1rem;
+      font-family: var(--font-body); font-size: 0.88rem; font-weight: 500;
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); transition: background 0.2s, color 0.2s;
+    }
+    .tab-btn.active { background: var(--ink); color: var(--paper); }
+    .tab-btn:not(.active):hover { background: var(--warm); color: var(--ink); }
+
+    /* Panels */
+    .tool-panel { display: none; }
+    .tool-panel.active { display: block; }
+
+    /* Form card */
+    .form-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.75rem;
+      display: flex; flex-direction: column; gap: 1.2rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .form-card h2 {
+      font-family: var(--font-head);
+      font-size: 1.45rem; font-weight: 600; letter-spacing: -0.02em;
+    }
+    .form-card h2 em { color: var(--accent); font-style: italic; }
+
+    .field { display: flex; flex-direction: column; gap: 0.38rem; }
+    .field label {
+      font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted); font-weight: 500;
+    }
+    textarea, input[type="text"], select {
+      width: 100%; background: var(--paper);
+      border: 1px solid var(--border); border-radius: 8px;
+      color: var(--ink); font-family: var(--font-body); font-size: 0.9rem;
+      line-height: 1.6; padding: 0.72rem 0.95rem; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s; resize: vertical;
+    }
+    textarea:focus, input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(200,75,47,0.1);
+    }
+    textarea::placeholder, input::placeholder { color: #b0a898; font-style: italic; }
+    .ta-sm { min-height: 90px; }
+    .ta-md { min-height: 150px; }
+    .ta-lg { min-height: 190px; }
+
+    /* Generate button */
+    .btn-gen {
+      align-self: flex-end;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: 8px; padding: 0.68rem 1.5rem;
+      font-family: var(--font-body); font-size: 0.9rem; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.01em;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 3px 12px rgba(200,75,47,0.3);
+    }
+    .btn-gen:hover:not(:disabled) {
+      background: var(--accent-dk);
+      transform: translateY(-1px);
+      box-shadow: 0 5px 18px rgba(200,75,47,0.38);
+    }
+    .btn-gen:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+    .btn-spin {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin 0.7s linear infinite; display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-gen.loading .btn-spin { display: block; }
+
+    /* Output */
+    .out-wrap { display: none; animation: slideUp 0.38s cubic-bezier(0.23,1,0.32,1) both; }
+    .out-wrap.show { display: block; }
+    @keyframes slideUp {
+      from { opacity:0; transform:translateY(10px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .out-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .out-card.err { border-color: rgba(200,75,47,0.45); }
+    .out-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.8rem 1.2rem; border-bottom: 1px solid var(--border);
+      background: var(--cream);
+    }
+    .out-title {
+      font-family: var(--font-head); font-size: 0.85rem; font-weight: 600;
+    }
+    .out-card.err .out-title { color: var(--accent); }
+    .out-actions { display: flex; gap: 0.45rem; }
+    .btn-sm {
+      font-family: var(--font-body); font-size: 0.7rem; color: var(--muted);
+      background: none; border: 1px solid var(--border); border-radius: 6px;
+      padding: 0.2rem 0.6rem; cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-sm:hover { border-color: var(--accent); color: var(--accent); }
+    .out-body {
+      padding: 1.2rem; font-size: 0.88rem; line-height: 1.8;
+      white-space: pre-wrap; word-break: break-word;
+    }
+    .out-card.err .out-body { color: var(--accent); }
+
+    /* Sidebar */
+    .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+    .s-card {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.2rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .s-card h3 {
+      font-family: var(--font-head); font-size: 0.92rem; font-weight: 600;
+      margin-bottom: 0.7rem;
+    }
+    .tip-list { display: flex; flex-direction: column; gap: 0.55rem; }
+    .tip {
+      font-size: 0.78rem; color: var(--muted); line-height: 1.5;
+      padding-left: 1rem; position: relative;
+    }
+    .tip::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-size: 0.72rem; }
+
+    /* Usage */
+    .usage-bar { background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 0.8rem; }
+    .usage-top { display: flex; justify-content: space-between; margin-bottom: 0.45rem; }
+    .usage-lbl { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+    .usage-n { font-size: 0.8rem; font-weight: 700; }
+    .usage-track { height: 4px; background: var(--warm); border-radius: 100px; overflow: hidden; }
+    .usage-fill { height: 100%; background: var(--accent); border-radius: 100px; transition: width 0.4s ease; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .app-wrap { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .btn-gen { width: 100%; justify-content: center; align-self: stretch; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════ HEADER ═══════ -->
+<header>
+  <nav>
+    <a href="#" class="logo">Career<span>Craft</span> AI</a>
+    <div id="user-info">
+      <img id="user-avatar" src="" alt="" />
+      <span id="user-name"></span>
+      <button class="btn-logout" onclick="logout()">Sign out</button>
+    </div>
+  </nav>
+</header>
+
+<!-- ═══════ LOGIN SCREEN ═══════ -->
+<div id="login-screen">
+  <div class="hero">
+    <span class="hero-tag">✦ AI-Powered Career Tools</span>
+
+    <h1>Land more<br/><em>interviews.</em></h1>
+
+    <p>Tailor your resume and write compelling cover letters in seconds. Powered by Gemini AI.</p>
+
+    <div class="features-row">
+      <div class="feat"><div class="feat-dot"></div>Resume optimizer</div>
+      <div class="feat"><div class="feat-dot"></div>Cover letter writer</div>
+      <div class="feat"><div class="feat-dot"></div>ATS-friendly</div>
+      <div class="feat"><div class="feat-dot"></div>Instant results</div>
+    </div>
+
+    <div class="login-box">
+      <p>Sign in with Google to get started — it's free</p>
+      <div id="g-signin-btn"></div>
+      <p style="font-size:0.7rem;">By signing in you agree to our Terms of Service.</p>
+    </div>
+
+    <!-- AdSense leaderboard 728x90 -->
+    <div class="ad-slot ad-slot-lg">
+      <!--
+      ACTIVATE WHEN ADSENSE IS APPROVED:
+      <ins class="adsbygoogle"
+           style="display:inline-block;width:728px;height:90px"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="YOUR_AD_SLOT_ID"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      -->
+      AdSense 728×90 Leaderboard — Activate after AdSense approval
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ APP SCREEN ═══════ -->
+<div id="app-screen">
+  <div class="app-wrap">
+
+    <!-- Main -->
+    <main>
+      <div class="tool-tabs">
+        <button class="tab-btn active" onclick="switchTab('resume')">✦ Resume Builder</button>
+        <button class="tab-btn" onclick="switchTab('cover')">✦ Cover Letter</button>
+      </div>
+
+      <!-- RESUME PANEL -->
+      <div class="tool-panel active" id="panel-resume">
+        <div class="form-card">
+          <h2>Resume <em>Builder</em></h2>
+
+          <div class="field">
+            <label>Job Title & Company (optional)</label>
+            <input type="text" id="r-jobtitle" placeholder="e.g. Senior Product Designer at Figma" />
+          </div>
+          <div class="field">
+            <label>Job Description *</label>
+            <textarea id="r-jobdesc" class="ta-md" placeholder="Paste the full job description here…"></textarea>
+          </div>
+          <div class="field">
+            <label>Your Current Resume or Experience *</label>
+            <textarea id="r-content" class="ta-lg" placeholder="Paste your resume or describe your experience, skills, and key achievements…"></textarea>
+          </div>
+          <div class="field">
+            <label>Tone</label>
+            <select id="r-tone">
+              <option value="professional">Professional & Formal</option>
+              <option value="modern">Modern & Direct</option>
+              <option value="creative">Creative & Bold</option>
+            </select>
+          </div>
+
+          <button class="btn-gen" id="r-btn" onclick="generateResume()">
+            <span class="btn-spin"></span>
+            <span class="r-lbl">Build Resume</span>
+          </button>
+        </div>
+
+        <!-- AdSense responsive between form and result -->
+        <div class="ad-slot ad-slot-resp" style="margin:1.25rem 0;">
+          <!--
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+               data-ad-slot="YOUR_AD_SLOT_ID"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+          -->
+          AdSense Responsive — Activate after approval
+        </div>
+
+        <div class="out-wrap" id="r-out">
+          <div class="out-card" id="r-out-card">
+            <div class="out-head">
+              <span class="out-title" id="r-out-title">Your Optimized Resume</span>
+              <div class="out-actions">
+                <button class="btn-sm" onclick="copyOut('r-out-body')">Copy</button>
+                <button class="btn-sm" onclick="dlTxt('r-out-body','resume.txt')">Download .txt</button>
+              </div>
+            </div>
+            <div class="out-body" id="r-out-body"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COVER LETTER PANEL -->
+      <div class="tool-panel" id="panel-cover">
+        <div class="form-card">
+          <h2>Cover Letter <em>Generator</em></h2>
+
+          <div class="field">
+            <label>Your Name</label>
+            <input type="text" id="c-name" placeholder="e.g. Alex Johnson" />
+          </div>
+          <div class="field">
+            <label>Job Title & Company *</label>
+            <input type="text" id="c-jobtitle" placeholder="e.g. Marketing Manager at Airbnb" />
+          </div>
+          <div class="field">
+            <label>Job Description *</label>
+            <textarea id="c-jobdesc" class="ta-md" placeholder="Paste the full job description here…"></textarea>
+          </div>
+          <div class="field">
+            <label>Your Background & Key Achievements *</label>
+            <textarea id="c-background" class="ta-md" placeholder="Describe your relevant experience, key wins, and why you're a great fit…"></textarea>
+          </div>
+          <div class="field">
+            <label>Tone</label>
+            <select id="c-tone">
+              <option value="professional">Professional & Confident</option>
+              <option value="warm">Warm & Personable</option>
+              <option value="bold">Bold & Direct</option>
+            </select>
+          </div>
+
+          <button class="btn-gen" id="c-btn" onclick="generateCoverLetter()">
+            <span class="btn-spin"></span>
+            <span class="c-lbl">Write Cover Letter</span>
+          </button>
+        </div>
+
+        <!-- AdSense responsive -->
+        <div class="ad-slot ad-slot-resp" style="margin:1.25rem 0;">
+          <!--
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+               data-ad-slot="YOUR_AD_SLOT_ID"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+          -->
+          AdSense Responsive — Activate after approval
+        </div>
+
+        <div class="out-wrap" id="c-out">
+          <div class="out-card" id="c-out-card">
+            <div class="out-head">
+              <span class="out-title" id="c-out-title">Your Cover Letter</span>
+              <div class="out-actions">
+                <button class="btn-sm" onclick="copyOut('c-out-body')">Copy</button>
+                <button class="btn-sm" onclick="dlTxt('c-out-body','cover-letter.txt')">Download .txt</button>
+              </div>
+            </div>
+            <div class="out-body" id="c-out-body"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+      <div class="s-card">
+        <h3>Your usage</h3>
+        <div class="usage-bar">
+          <div class="usage-top">
+            <span class="usage-lbl">Generations today</span>
+            <span class="usage-n" id="usage-n">0 / 10</span>
+          </div>
+          <div class="usage-track">
+            <div class="usage-fill" id="usage-fill" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="s-card">
+        <h3>Tips for better results</h3>
+        <div class="tip-list">
+          <p class="tip">Paste the full job description — every keyword matters for ATS matching.</p>
+          <p class="tip">Include real numbers: "grew revenue 40%" beats "increased revenue".</p>
+          <p class="tip">List your top 6–8 skills explicitly so the AI highlights them.</p>
+          <p class="tip">Use the Cover Letter right after the Resume for consistent messaging.</p>
+        </div>
+      </div>
+
+      <!-- AdSense 300x250 rectangle -->
+      <div class="ad-slot ad-slot-rect">
+        <!--
+        <ins class="adsbygoogle"
+             style="display:inline-block;width:300px;height:250px"
+             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-slot="YOUR_AD_SLOT_ID"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        -->
+        AdSense 300×250<br/>Medium Rectangle<br/>Activate after approval
+      </div>
+
+    </aside>
+  </div>
+</div>
+
+<!-- ═══════ JAVASCRIPT ═══════ -->
+<script>
+  // ── State ──
+  let currentUser = null;
+  let usageCount  = 0;
+  const MAX_USE   = 10;
+
+  // ── Google Sign-In init ──
+  window.onload = () => {
+    google.accounts.id.initialize({
+      /*
+        Get your Client ID at:
+        https://console.cloud.google.com → APIs & Services → Credentials → Create OAuth 2.0 Client ID
+        Authorized origins: https://your-domain.com
+        Authorized redirect URIs: https://your-domain.com
+      */
+      client_id: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+      callback: onGoogleLogin,
+      auto_select: false,
+    });
+
+    google.accounts.id.renderButton(
+      document.getElementById('g-signin-btn'),
+      { theme: 'outline', size: 'large', text: 'signin_with', shape: 'rectangular', width: 270 }
+    );
+
+    // Restore session
+    const saved = localStorage.getItem('cc_user');
+    if (saved) { currentUser = JSON.parse(saved); showApp(); }
+
+    // Restore daily usage
+    const today = new Date().toDateString();
+    if (localStorage.getItem('cc_day') === today) {
+      usageCount = parseInt(localStorage.getItem('cc_uses') || '0');
+    } else {
+      usageCount = 0;
+      localStorage.setItem('cc_day', today);
+      localStorage.setItem('cc_uses', '0');
+    }
+    updateUsage();
+  };
+
+  function onGoogleLogin(res) {
+    const p = parseJwt(res.credential);
+    currentUser = { name: p.name, email: p.email, picture: p.picture };
+    localStorage.setItem('cc_user', JSON.stringify(currentUser));
+    showApp();
+  }
+
+  function parseJwt(token) {
+    const b64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(decodeURIComponent(
+      atob(b64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+    ));
+  }
+
+  function showApp() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app-screen').style.display   = 'block';
+    const ui = document.getElementById('user-info');
+    ui.style.display = 'flex';
+    document.getElementById('user-name').textContent   = currentUser.name.split(' ')[0];
+    document.getElementById('user-avatar').src         = currentUser.picture;
+  }
+
+  function logout() {
+    google.accounts.id.disableAutoSelect();
+    localStorage.removeItem('cc_user');
+    currentUser = null;
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('app-screen').style.display   = 'none';
+    document.getElementById('user-info').style.display    = 'none';
+  }
+
+  // ── Tabs ──
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach((b, i) =>
+      b.classList.toggle('active', (i === 0) === (tab === 'resume'))
+    );
+    document.getElementById('panel-resume').classList.toggle('active', tab === 'resume');
+    document.getElementById('panel-cover').classList.toggle('active', tab === 'cover');
+  }
+
+  // ── Usage ──
+  function updateUsage() {
+    document.getElementById('usage-n').textContent     = `${usageCount} / ${MAX_USE}`;
+    document.getElementById('usage-fill').style.width  = `${Math.min((usageCount / MAX_USE) * 100, 100)}%`;
+  }
+  function incUsage() {
+    usageCount++;
+    localStorage.setItem('cc_uses', usageCount.toString());
+    updateUsage();
+  }
+  function checkLimit() {
+    if (usageCount >= MAX_USE) {
+      alert(`You've reached today's limit of ${MAX_USE} generations. Come back tomorrow!`);
+      return false;
+    }
+    return true;
+  }
+
+  // ── API call (goes to /api/generate Vercel function) ──
+  async function callAPI(prompt) {
+    const res  = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt }),
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || 'Something went wrong.');
+    return data.result;
+  }
+
+  // ── Button helpers ──
+  function setLoading(btnId, lblSelector, on, defaultLbl) {
+    const btn = document.getElementById(btnId);
+    btn.disabled = on;
+    btn.classList.toggle('loading', on);
+    btn.querySelector(lblSelector).textContent    = on ? 'Generating…' : defaultLbl;
+    btn.querySelector('.btn-spin').style.display  = on ? 'block' : 'none';
+  }
+
+  function showResult(outId, cardId, titleId, bodyId, text, isErr) {
+    document.getElementById(titleId).textContent = isErr ? 'Error' :
+      (outId === 'r-out' ? 'Your Optimized Resume' : 'Your Cover Letter');
+    document.getElementById(bodyId).textContent  = text;
+    document.getElementById(cardId).classList.toggle('err', isErr);
+    const wrap = document.getElementById(outId);
+    wrap.classList.remove('show');
+    void wrap.offsetWidth;
+    wrap.classList.add('show');
+    wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // ── RESUME BUILDER ──
+  async function generateResume() {
+    if (!checkLimit()) return;
+    const jobTitle = document.getElementById('r-jobtitle').value.trim();
+    const jobDesc  = document.getElementById('r-jobdesc').value.trim();
+    const content  = document.getElementById('r-content').value.trim();
+    const tone     = document.getElementById('r-tone').value;
+    if (!jobDesc || !content) { alert('Please fill in the Job Description and your Resume / Experience.'); return; }
+    setLoading('r-btn', '.r-lbl', true, 'Build Resume');
+    try {
+      const prompt = `You are an expert resume writer and career coach. Rewrite and optimize the candidate's resume to perfectly match the job description.
+
+JOB TITLE: ${jobTitle || 'Not specified'}
+
+JOB DESCRIPTION:
+${jobDesc}
+
+CANDIDATE'S CURRENT RESUME / EXPERIENCE:
+${content}
+
+TONE: ${tone}
+
+INSTRUCTIONS:
+1. Rewrite to highlight skills and experience that directly match the job description
+2. Use strong action verbs and quantify achievements wherever possible
+3. Make it ATS-friendly by naturally incorporating keywords from the job description
+4. Structure: Professional Summary → Work Experience → Skills → Education
+5. Keep tone: ${tone}
+6. Only use the information provided — do not invent details
+7. Clean formatting with clear section headers
+
+Output ONLY the resume text. No preamble or commentary.`;
+      const result = await callAPI(prompt);
+      showResult('r-out', 'r-out-card', 'r-out-title', 'r-out-body', result, false);
+      incUsage();
+    } catch (err) {
+      showResult('r-out', 'r-out-card', 'r-out-title', 'r-out-body', err.message, true);
+    } finally {
+      setLoading('r-btn', '.r-lbl', false, 'Build Resume');
+    }
+  }
+
+  // ── COVER LETTER ──
+  async function generateCoverLetter() {
+    if (!checkLimit()) return;
+    const name   = document.getElementById('c-name').value.trim();
+    const job    = document.getElementById('c-jobtitle').value.trim();
+    const desc   = document.getElementById('c-jobdesc').value.trim();
+    const bg     = document.getElementById('c-background').value.trim();
+    const tone   = document.getElementById('c-tone').value;
+    if (!desc || !bg) { alert('Please fill in the Job Description and your Background.'); return; }
+    setLoading('c-btn', '.c-lbl', true, 'Write Cover Letter');
+    try {
+      const prompt = `You are an expert career coach and professional writer. Write a compelling cover letter.
+
+APPLICANT NAME: ${name || 'The applicant'}
+POSITION: ${job || 'Not specified'}
+
+JOB DESCRIPTION:
+${desc}
+
+APPLICANT BACKGROUND & ACHIEVEMENTS:
+${bg}
+
+TONE: ${tone}
+
+INSTRUCTIONS:
+1. Write 3–4 paragraphs that feel personal, specific, and compelling
+2. Opening: Hook with a strong first impression — no "I am writing to express my interest"
+3. Middle: Connect specific experience to the job requirements using the background provided
+4. Closing: Confident call to action, eager for an interview
+5. Tone: ${tone}
+6. 300–400 words, feels human — not a template
+
+Output ONLY the cover letter. No preamble.`;
+      const result = await callAPI(prompt);
+      showResult('c-out', 'c-out-card', 'c-out-title', 'c-out-body', result, false);
+      incUsage();
+    } catch (err) {
+      showResult('c-out', 'c-out-card', 'c-out-title', 'c-out-body', err.message, true);
+    } finally {
+      setLoading('c-btn', '.c-lbl', false, 'Write Cover Letter');
+    }
+  }
+
+  // ── Utilities ──
+  function copyOut(id) {
+    const text = document.getElementById(id).textContent;
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      event.target.textContent = 'Copied!';
+      setTimeout(() => event.target.textContent = 'Copy', 1800);
+    });
+  }
+
+  function dlTxt(id, filename) {
+    const text = document.getElementById(id).textContent;
+    if (!text) return;
+    const a = Object.assign(document.createElement('a'), {
+      href: URL.createObjectURL(new Blob([text], { type: 'text/plain' })),
+      download: filename,
+    });
+    a.click();
+  }
+</script>
+</body>
+</html>
