@@ -1,8 +1,4 @@
-// api/generate.js
-// Vercel serverless function — place at /api/generate.js
-
-export default async function handler(req, res) {
-  // CORS headers (in case you ever call from a different origin)
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -24,6 +20,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    const fetch = (await import('node-fetch')).default;
     const geminiRes = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${apiKey}`,
       {
@@ -51,6 +48,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ result: text });
   } catch (err) {
     console.error('Handler error:', err);
-    return res.status(500).json({ error: 'Internal server error.' });
+    return res.status(500).json({ error: 'Internal server error: ' + err.message });
   }
-}
+};
